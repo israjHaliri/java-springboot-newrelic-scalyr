@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <property name="LOG_FILE" value="/tmp"/>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d %-5level %logger{35} - %msg %n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <file>${LOG_FILE}/java-sprongboot-newrelic-scalyr.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+
+            <fileNamePattern>
+                ${LOG_FILE}/java-sprongboot-newrelic-scalyr.log.%d{yyyy-MM-dd}.log.gz
+            </fileNamePattern>
+
+            <maxHistory>365</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d %-5level %logger{35} - %msg %n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="SCALYR" class="com.scalyr.logback.ScalyrAppender">
+        <apiKey>yourscalyrapikey-</apiKey>
+        <logfile>java-sprongboot-newrelic-scalyr.log</logfile>
+        <parser>logback</parser>
+        <serverHost>java-sprongboot-newrelic-scalyr</serverHost>
+
+        <!-- Uncomment if your account is hosted in eu.scalyr.com.
+        -->
+        <scalyrServerAddress>https://upload.eu.scalyr.com</scalyrServerAddress>
+
+        <env>${spring.profiles.active:-no-active-profile}</env>
+
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <!--<pattern>%-4relative [%thread] - %msg%n</pattern>-->
+            <pattern>%-5level %logger{35} - %msg %n</pattern>
+        </layout>
+
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="SCALYR"/>
+    </root>
+
+</configuration>
